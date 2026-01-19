@@ -1,4 +1,6 @@
 import pandas as pd
+import os
+
 
 print("Enter the file path of the CSV file to clean:")
 file_path = input()
@@ -30,3 +32,12 @@ else:
     print("Exiting without changes.")
     cleaned_file = file
 
+if option != 4:
+    base_name = "cleaned_file"
+    extension = ".csv"
+    output_path = base_name + extension
+    count = 1
+
+while os.path.exists(output_path):
+    output_path = f"{base_name}_{count}{extension}"
+    count += 1
