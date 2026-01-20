@@ -3,13 +3,23 @@ import os
 
 
 print("Enter the file path of the CSV file to clean:")
-file_path = input()
+file_path = input() #Inputs the file path from the user
 
 file = pd.read_csv(file_path)
-print(file.describe())
+print(file.describe()) #Displays basic statistics of the CSV file
 
-print("1. Remove Duplicates \n 2. Fill Missing Value \n 3. Change Date Format \n 4. Exit")
-option = int(input())
+print("1. Remove Duplicates\n2. Fill Missing Value\n3.Change Date Format \n4. Exit")
+#Checking if the input is valid
+try:
+    option = int(input())
+    if option < 1 or option > 4:
+        print("Invalid input. Please enter a number between 1 and 4.")
+        option = 4
+except ValueError:
+    print("Invalid input. Please enter a number between 1 and 4.")
+    option = 4
+
+#Cleaning operations
 if option == 1:
     cleaned_file = file.drop_duplicates()
     print("Duplicates removed.")
@@ -32,12 +42,16 @@ else:
     print("Exiting without changes.")
     cleaned_file = file
 
+#Generating unique output file name and saving
 if option != 4:
     base_name = "cleaned_file"
     extension = ".csv"
     output_path = base_name + extension
     count = 1
-
-while os.path.exists(output_path):
-    output_path = f"{base_name}_{count}{extension}"
-    count += 1
+    
+    while os.path.exists(output_path):
+        output_path = f"{base_name}_{count}{extension}"
+        count += 1
+    
+    cleaned_file.to_csv(output_path, index=False)
+    print(f"Cleaned file saved as '{output_path}'.")
