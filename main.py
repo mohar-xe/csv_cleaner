@@ -25,41 +25,62 @@ def change_date_format(file):
     print(f"Date format in column '{date_column}' changed to '{date_format}'.")
     return cleaned
 
+def remove_column(file):
+    print("Enter the column name to remove:")
+    column_name = input()
+    cleaned = file.drop(columns=[column_name])
+    print(f"Column '{column_name}' removed.")
+    return cleaned
+
+def rename_column(file):
+    print("Enter the current column name:")
+    current_name = input()
+    print("Enter the new column name:")
+    new_name = input()
+    cleaned_file = file.rename(columns={current_name: new_name})
+    print(f"Column '{current_name}' renamed to '{new_name}'.")
+    return cleaned_file
+
 def exit_program(file):
     print("Exiting without changes.")
     return None
 
 print("Enter the file path of the CSV file to clean:")
 file_path = input() #Inputs the file path from the user
+if not os.path.exists(file_path):
+    print("File does not exist. Exiting.")
+    exit()
 
 file = pd.read_csv(file_path)
 print(file.describe()) #Displays basic statistics of the CSV file
 
-print("1. Remove Duplicates\n2. Fill Missing Value\n3. Change Date Format \n4. Exit")
+print("1. Remove Duplicates\n2. Fill Missing Value\n3. Change Date Format \n4. Remove Column\n5. Rename Column\n6. Exit")
 
 #Cleaning operations
 operations = {
     1: remove_duplicates,
     2: fill_missing_values,
     3: change_date_format,
-    4: exit_program
+    4: remove_column,
+    5: rename_column,
+    6: exit_program
 }
 
 #Checking if the input is valid
 try:
     option = int(input())
-    if option < 1 or option > 4:
-        print("Invalid input. Please enter a number between 1 and 4.")
-        option = 4
+    if option < 1 or option > 6:
+        print("Invalid input. Please enter a number between 1 and 6.")
+        option = 6
 except ValueError:
-    print("Invalid input. Please enter a number between 1 and 4.")
-    option = 4
+    print("Invalid input. Please enter a number between 1 and 6.")
+    option = 6
 
 #Executing the selected operation
 cleaned_file = operations[option](file)
 
 #Generating unique output file name and saving
-if option != 4:
+if option != 6:
     base_name = "cleaned_file"
     extension = ".csv"
     output_path = base_name + extension
